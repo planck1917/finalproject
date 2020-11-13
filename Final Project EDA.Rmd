@@ -10,23 +10,76 @@ output: html_notebook
 # Load required packages
 library(ggplot2)
 library(rio)
-install.packages("descr")
 library(descr)
-install
-library(sjPlot)
 library(stargazer)
-
-#Load Data Files
-
-covid <- import("covid_international.csv")
-income <- import("Income ratings.csv")
+library(dplyr)
 ```
 
+```{r}
+#Load Data Files
+
+covid_data <- read.csv("covid_international.csv")
+gni_data <- read.csv("Income ratings.csv")
+```
 
 ### Preliminary Cleaning of Data
 
 ```{r}
+marxist <-
+  covid_data %>%
+  filter(iso_code %in% c("CHN","LAO","CUB","VNM"))%>%
+  select(location,iso_code,inf_rate,death_rate,deaths,cases,response,gdp_pc)%>%
+  mutate(inf_prev_lev = inf_rate+cases)%>%
+  mutate(death_prev_lev = deaths + death_rate)%>%
+  mutate(resp_lev = 1/response)%>%
+  mutate(response_sucess_lev = inf_prev_lev+death_prev_lev+resp_lev)%>%
+  mutate(state_type = 3)
 
+socialist_govs <-
+  covid_data %>%
+  filter(location %in% c("Nepal","Venezuela","Spain","New Zealand","Nicaragua","Argenti","Mozambique","Moldova","Angola","Algeria"))%>%
+  select(location,iso_code, inf_rate,death_rate,deaths,cases,response,gdp_pc)%>%
+  mutate(inf_prev_lev = inf_rate+cases)%>%
+  mutate(death_prev_lev = deaths + death_rate)%>%
+  mutate(resp_lev = 1/response)%>%
+  mutate(response_sucess_lev = inf_prev_lev+death_prev_lev+resp_lev)%>%
+  mutate(state_type = 2)
+
+nordic_model <- 
+  covid_data %>%
+  filter(location %in% c("Iceland","Norway","Sweden","Denmark","Finland"))%>%
+  select(location,iso_code,inf_rate,death_rate,deaths,cases,response,gdp_pc)%>%
+  mutate(inf_prev_lev = inf_rate+cases)%>%
+  mutate(death_prev_lev = deaths + death_rate)%>%
+  mutate(resp_lev = 1/response)%>%
+  mutate(response_sucess_lev = inf_prev_lev+death_prev_lev+resp_lev)%>%
+  mutate(state_type = 1)
+
+`%notin%` <- Negate(`%in%`) #allows me to not include the selected countries when filtering
+
+capitalist_govs <- 
+  covid_data %>%
+  filter(location %notin% c("Iceland","Norway","Sweden","Denmark","Finland","Nepal","Venezuela","Spain","New Zealand","Nicaragua","Argenti","Mozambique","Moldova","Angola","Algeria"))%>%
+  filter(iso_code %notin% c("CHN","LAO","CUB","VNM"))%>%
+  select(location,iso_code,inf_rate,death_rate,deaths,cases,response,gdp_pc)%>%
+  mutate(inf_prev_lev = inf_rate+cases)%>%
+  mutate(death_prev_lev = deaths + death_rate)%>%
+  mutate(resp_lev = 1/response)%>%
+  mutate(response_sucess_lev = inf_prev_lev+death_prev_lev+resp_lev)%>%
+  mutate(state_type = 0)
+
+adapted_covid_data <-
+  capitalist_govs %>%
+    full_join(marxist)%>%
+    full_join(nordic_model)%>%
+    full_join(socialist_govs)%>%
+    select(location,iso_code,state_type,response_sucess_lev,resp_lev,death_prev_lev,inf_prev_lev,gdp_pc)%>%
+  arrange(location)
+
+complete_cov_data <-
+  adapted_covid_data %>%
+  left_join(gni_data %>% select(Country.Code,IncomeGroup),by=c("iso_code"="Country.Code"))
+complete_cov_data
 ```
 
 
