@@ -229,21 +229,61 @@ summary {
 
 
 <!-- rnb-text-begin -->
-<p>This is an <a href="http://rmarkdown.rstudio.com">R Markdown</a> Notebook. When you execute code within the notebook, the results appear beneath the code.</p>
-<p>Try executing this chunk by clicking the <em>Run</em> button within the chunk or by placing your cursor inside it and pressing <em>Ctrl+Shift+Enter</em>.</p>
+<div id="front-matter" class="section level3">
+<h3>Front Matter</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChjYXJzKVxuYGBgIn0= -->
-<pre class="r"><code>plot(cars)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBMb2FkIHJlcXVpcmVkIHBhY2thZ2VzXG5saWJyYXJ5KGdncGxvdDIpXG5saWJyYXJ5KHJpbylcbmluc3RhbGwucGFja2FnZXMoXCJkZXNjclwiKVxuYGBgIn0= -->
+<pre class="r"><code># Load required packages
+library(ggplot2)
+library(rio)
+install.packages(&quot;descr&quot;)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gaW5zdGFsbC5wYWNrYWdlcyA6IFVwZGF0aW5nIGxvYWRlZCBwYWNrYWdlc1xuIn0= -->
+<pre><code>Error in install.packages : Updating loaded packages</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkZXNjcilcbmxpYnJhcnkoc2pQbG90KVxuYGBgIn0= -->
+<pre class="r"><code>library(descr)
+library(sjPlot)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gbGlicmFyeShzalBsb3QpIDogdGhlcmUgaXMgbm8gcGFja2FnZSBjYWxsZWQg4oCYc2pQbG904oCZXG4ifQ== -->
+<pre><code>Error in library(sjPlot) : there is no package called ‘sjPlot’</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the toolbar or by pressing <em>Ctrl+Alt+I</em>.</p>
-<p>When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the <em>Preview</em> button or press <em>Ctrl+Shift+K</em> to preview the HTML file).</p>
-<p>The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike <em>Knit</em>, <em>Preview</em> does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.</p>
+</div>
+<div id="preliminary-cleaning-of-data" class="section level3">
+<h3>Preliminary Cleaning of Data</h3>
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="guiding-question-i.e.-research-question-make-a-clear-statement-of-a-single-guidingresearch-question-that-will-drive-your-analysis.-it-should-be-phrased-as-a-question-that-you-will-try-to-investigate-i.e.-it-should-have-a-question-mark" class="section level3">
+<h3>Guiding Question (i.e., Research Question): Make a clear statement of a single guiding/research question that will drive your analysis. It should be phrased as a question that you will try to investigate (i.e., it should have a question mark)</h3>
+<div id="become-acquainted-with-your-data-sources" class="section level4">
+<h4>- Become acquainted with your data sources</h4>
+<ul>
+<li><p>Where did you find them?</p></li>
+<li><p>Who collected/maintains them?</p></li>
+<li><p>When &amp; Why were they originally collected?</p></li>
+<li><p>What does a case represent in each data source, and how many total cases are available?</p></li>
+<li><p>What are some of the variables that you plan to use?</p></li>
+</ul>
+</div>
+</div>
+<div id="explore-intuition-related-to-the-research-question" class="section level3">
+<h3>Explore intuition related to the research question</h3>
+<div id="create-some-informative-plots-and-summary-statistics" class="section level4">
+<h4>1. Create some informative plots and summary statistics</h4>
+</div>
+<div id="describe-preliminary-observations-and-intuition-about-the-research-question" class="section level4">
+<h4>2. Describe preliminary observations and intuition about the research question</h4>
+<!-- rnb-text-end -->
+</div>
+</div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKYXV0aG9yOiAiVmluY2VudCBTbWVkaWxlIgpkYXRlOiAiMTUgTm92ZW1iZXIsIDIwMjAiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KClRoaXMgaXMgYW4gW1IgTWFya2Rvd25dKGh0dHA6Ly9ybWFya2Rvd24ucnN0dWRpby5jb20pIE5vdGVib29rLiBXaGVuIHlvdSBleGVjdXRlIGNvZGUgd2l0aGluIHRoZSBub3RlYm9vaywgdGhlIHJlc3VsdHMgYXBwZWFyIGJlbmVhdGggdGhlIGNvZGUuIAoKVHJ5IGV4ZWN1dGluZyB0aGlzIGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqUnVuKiBidXR0b24gd2l0aGluIHRoZSBjaHVuayBvciBieSBwbGFjaW5nIHlvdXIgY3Vyc29yIGluc2lkZSBpdCBhbmQgcHJlc3NpbmcgKkN0cmwrU2hpZnQrRW50ZXIqLiAKCmBgYHtyfQpwbG90KGNhcnMpCmBgYAoKQWRkIGEgbmV3IGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqSW5zZXJ0IENodW5rKiBidXR0b24gb24gdGhlIHRvb2xiYXIgb3IgYnkgcHJlc3NpbmcgKkN0cmwrQWx0K0kqLgoKV2hlbiB5b3Ugc2F2ZSB0aGUgbm90ZWJvb2ssIGFuIEhUTUwgZmlsZSBjb250YWluaW5nIHRoZSBjb2RlIGFuZCBvdXRwdXQgd2lsbCBiZSBzYXZlZCBhbG9uZ3NpZGUgaXQgKGNsaWNrIHRoZSAqUHJldmlldyogYnV0dG9uIG9yIHByZXNzICpDdHJsK1NoaWZ0K0sqIHRvIHByZXZpZXcgdGhlIEhUTUwgZmlsZSkuCgpUaGUgcHJldmlldyBzaG93cyB5b3UgYSByZW5kZXJlZCBIVE1MIGNvcHkgb2YgdGhlIGNvbnRlbnRzIG9mIHRoZSBlZGl0b3IuIENvbnNlcXVlbnRseSwgdW5saWtlICpLbml0KiwgKlByZXZpZXcqIGRvZXMgbm90IHJ1biBhbnkgUiBjb2RlIGNodW5rcy4gSW5zdGVhZCwgdGhlIG91dHB1dCBvZiB0aGUgY2h1bmsgd2hlbiBpdCB3YXMgbGFzdCBydW4gaW4gdGhlIGVkaXRvciBpcyBkaXNwbGF5ZWQuCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKYXV0aG9yOiAiVmluY2VudCBTbWVkaWxlIgpkYXRlOiAiMTUgTm92ZW1iZXIsIDIwMjAiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KCiMjIyBGcm9udCBNYXR0ZXIKYGBge3J9CiMgTG9hZCByZXF1aXJlZCBwYWNrYWdlcwpsaWJyYXJ5KGdncGxvdDIpCmxpYnJhcnkocmlvKQppbnN0YWxsLnBhY2thZ2VzKCJkZXNjciIpCmxpYnJhcnkoZGVzY3IpCmluc3RhbGwKbGlicmFyeShzalBsb3QpCmxpYnJhcnkoc3RhcmdhemVyKQoKI0xvYWQgRGF0YSBGaWxlcwoKY292aWQgPC0gaW1wb3J0KCJjb3ZpZF9pbnRlcm5hdGlvbmFsLmNzdiIpCmluY29tZSA8LSBpbXBvcnQoIkluY29tZSByYXRpbmdzLmNzdiIpCmBgYAoKCiMjIyBQcmVsaW1pbmFyeSBDbGVhbmluZyBvZiBEYXRhCgpgYGB7cn0KCmBgYAoKCiMjI0d1aWRpbmcgUXVlc3Rpb24gKGkuZS4sIFJlc2VhcmNoIFF1ZXN0aW9uKTogTWFrZSBhIGNsZWFyIHN0YXRlbWVudCBvZiBhIHNpbmdsZSBndWlkaW5nL3Jlc2VhcmNoIHF1ZXN0aW9uIHRoYXQgd2lsbCBkcml2ZSB5b3VyIGFuYWx5c2lzLiAgSXQgc2hvdWxkIGJlIHBocmFzZWQgYXMgYSBxdWVzdGlvbiB0aGF0IHlvdSB3aWxsIHRyeSB0byBpbnZlc3RpZ2F0ZSAoaS5lLiwgaXQgc2hvdWxkIGhhdmUgYSBxdWVzdGlvbiBtYXJrKSAKCiMjIyMgLSBCZWNvbWUgYWNxdWFpbnRlZCB3aXRoIHlvdXIgZGF0YSBzb3VyY2VzCgogIC0gV2hlcmUgZGlkIHlvdSBmaW5kIHRoZW0/CiAgCiAgCiAgCiAgLSBXaG8gY29sbGVjdGVkL21haW50YWlucyB0aGVtPwogIAogIAogIAogIC0gV2hlbiAmIFdoeSB3ZXJlIHRoZXkgb3JpZ2luYWxseSBjb2xsZWN0ZWQ/CiAgCiAgCiAgCiAgLSBXaGF0IGRvZXMgYSBjYXNlIHJlcHJlc2VudCBpbiBlYWNoIGRhdGEgc291cmNlLCBhbmQgaG93IG1hbnkgdG90YWwgY2FzZXMgYXJlIGF2YWlsYWJsZT8KICAKICAKICAKICAtIFdoYXQgYXJlIHNvbWUgb2YgdGhlIHZhcmlhYmxlcyB0aGF0IHlvdSBwbGFuIHRvIHVzZT8KCgojIyMgRXhwbG9yZSBpbnR1aXRpb24gcmVsYXRlZCB0byB0aGUgcmVzZWFyY2ggcXVlc3Rpb24gCgojIyMjIDEuIENyZWF0ZSBzb21lIGluZm9ybWF0aXZlIHBsb3RzIGFuZCBzdW1tYXJ5IHN0YXRpc3RpY3MgCgoKIyMjIyAyLiBEZXNjcmliZSBwcmVsaW1pbmFyeSBvYnNlcnZhdGlvbnMgYW5kIGludHVpdGlvbiBhYm91dCB0aGUgcmVzZWFyY2ggcXVlc3Rpb24KCg==</div>
 
 
 

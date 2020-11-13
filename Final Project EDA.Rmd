@@ -5,16 +5,58 @@ date: "15 November, 2020"
 output: html_notebook
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
-
+### Front Matter
 ```{r}
-plot(cars)
+# Load required packages
+library(ggplot2)
+library(rio)
+install.packages("descr")
+library(descr)
+install
+library(sjPlot)
+library(stargazer)
+
+#Load Data Files
+
+covid <- import("covid_international.csv")
+income <- import("Income ratings.csv")
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+### Preliminary Cleaning of Data
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+```{r}
+
+```
+
+
+###Guiding Question (i.e., Research Question): Make a clear statement of a single guiding/research question that will drive your analysis.  It should be phrased as a question that you will try to investigate (i.e., it should have a question mark) 
+
+#### - Become acquainted with your data sources
+
+  - Where did you find them?
+  
+  
+  
+  - Who collected/maintains them?
+  
+  
+  
+  - When & Why were they originally collected?
+  
+  
+  
+  - What does a case represent in each data source, and how many total cases are available?
+  
+  
+  
+  - What are some of the variables that you plan to use?
+
+
+### Explore intuition related to the research question 
+
+#### 1. Create some informative plots and summary statistics 
+
+
+#### 2. Describe preliminary observations and intuition about the research question
+
