@@ -80,10 +80,7 @@ adapted_covid_data <-
 complete_cov_data <-
   adapted_covid_data %>%
   left_join(gni_data %>% select(Country.Code,IncomeGroup),by=c("iso_code"="Country.Code"))
-
-complete_cov_data %>%
-  mutate()
-  
+complete_cov_data
 ```
 
 
@@ -112,7 +109,7 @@ complete_cov_data %>%
   
   - What are some of the variables that you plan to use?
 
-I plan on specifically using the number of deaths, death rate, infection rate, total number of infected. These will be all summed together to create a COVID Response Sucess Rating (CRSR). Response level, population density, and economic development level will be used as control variables/in case of spurious relations.
+I plan on specifically using the number of deaths, death rate, infection rate, total number of infected. These will be all summed together to create a COVID Response Sucess Rating (CRSR), which will then be evaliated by the "State Type," a variable that I created myself based off of the government and socioeconomics of the nation that divides countries either into Capitalist, Socialist (nations with a socialist coalotion or government in power), Marxist/Communist (only five countries still espouse this: Cuba, China, Laos, and Vietnam), and the "Nordic Model" (which refers to the unique economic model followed by the Nordic countries such as Sweden and Denmark). Response level, population density, and economic development level will be used as control variables/in case of spurious relations.
 
 ### Explore intuition related to the research question 
 
@@ -160,4 +157,4 @@ complete_cov_data%>%
 
 #### 2. Describe preliminary observations and intuition about the research question
 
-
+Overall from what I can tell, governments with socialist parties in power or communist/marxist states have overall lower deaths, total infections, and death and infection rates than the rest of the world does. However, this does not control for things such as population density and economic development levels. Furthermore, specific policy decisions such as response stricness have not been taken into account yet as well. However, I remain confident that the leftist governments, such as socialist and marxist states will remain lower in terms of deaths and infections, and thus better equipped at combatting the COVID-19 Pandemic even when these variables are controlled for.
