@@ -92,7 +92,7 @@ complete_cov_data
 
 ##### Where did you find them?
   
-  The Primary source I obatained from Clayton Webb of the Kansas State Unversity Political Science Department (a partner of my Political Science professor here at Penn State), who complied the dataset using datasets from the [Our World in Data](https://ourworldindata.org/) and [The Quality of Government Institute](https://qog.pol.gu.se/). I specifically obtained it through Dr. Suzanna Linn,  a Professor of Political Science here at Penn State. ISO Codes were taken from the [International Organization for Standardization](https://www.iso.org/about-us.html). The secondary source I obtained from the [World Bank](https://data.worldbank.org/indicator/NY.GNP.PCAP.CD).
+  The Primary source I obatained from Clayton Webb of the Kansas State Unversity Political Science Department (a partner of my Political Science professor here at Penn State), who complied the dataset using datasets from the [Our World in Data](https://ourworldindata.org/) and [The Quality of Government Institute](https://qog.pol.gu.se/). I specifically obtained it through Dr. Suzanna Linn,  a Professor of Political Science here at Penn State (who is currently one of my other instructors). ISO Codes were taken from the [International Organization for Standardization](https://www.iso.org/about-us.html). The secondary source I obtained from the [World Bank](https://data.worldbank.org/indicator/NY.GNP.PCAP.CD).
 
   
 ##### Who collected/maintains them?
