@@ -83,21 +83,24 @@ complete_cov_data
 ```
 
 
-###Guiding Question (i.e., Research Question): Make a clear statement of a single guiding/research question that will drive your analysis.  It should be phrased as a question that you will try to investigate (i.e., it should have a question mark) 
+### Guiding Question (i.e., Research Question): Make a clear statement of a single guiding/research question that will drive your analysis.  It should be phrased as a question that you will try to investigate (i.e., it should have a question mark) 
+
+**Research Question:** Does a state's socioeconomic and political structure effect it's ability to deal with the Coronavirus? And what other factors might cause the disparity we see between nations like the United States and nations like Vietnam?
 
 #### - Become acquainted with your data sources
 
   - Where did you find them?
   
-  
+  The Primary source I obatained from Clayton Webb of the Kansas State Unversity Political Science Department (a partner of my Political Science professor here at Penn State), who complied the dataset using datasets from the [Our World in Data](https://ourworldindata.org/) and [The Quality of Government Institute](https://qog.pol.gu.se/). ISO Codes were taken from the [International Organization for Standardization](https://www.iso.org/about-us.html). The secondary source I obtained from the [World Bank](https://data.worldbank.org/indicator/NY.GNP.PCAP.CD).
+
   
   - Who collected/maintains them?
   
-  
+  The Covid International Dataset is collected and maintained by Clayton Webb of KSU and the GNI data is collected and maintained by the World Bank.
   
   - When & Why were they originally collected?
   
-  
+  The COVID 
   
   - What does a case represent in each data source, and how many total cases are available?
   
