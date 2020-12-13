@@ -164,7 +164,7 @@ complete_cov_data %>%
 complete_cov_data%>%
   ggplot(mapping=aes(x=response_sucess_lev,facet=factor(state_type),fill=factor(state_type)))+
   geom_density(alpha=.5,aes(color=factor(state_type)))+
-  guides(color=FALSE)+
+  guides(fill=FALSE,color=FALSE)+
   labs(title="Density Distribution of COVID Response Rating \nby State Type",
        caption="Source: COVID International Dataset \nWorld Bank",
        fill="State Type",
@@ -178,6 +178,7 @@ complete_cov_data%>%
 complete_cov_data%>%   
   ggplot(mapping=aes(x=state_type,y=response_sucess_lev,fill=state_type))+
   geom_boxplot()+
+  guides(fill=FALSE,color=FALSE)+
   labs(title="Distribution of COVID Response Ratings by State Type",
        caption="Source: COVID International Dataset \nWorld Bank",
        x=NULL,
@@ -252,6 +253,7 @@ The preliminary analysis of the State Type variable displayed that most of the w
 complete_cov_data %>%
   ggplot(mapping=aes(x=state_type,fill=state_type))+
     geom_bar()+
+    guides(fill=FALSE,color=FALSE)+
     labs(title="Distribution of State Types",
          x="State Type",
          y="Total Countries")+
