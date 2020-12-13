@@ -1,12 +1,24 @@
 ---
-title: "R Notebook"
+title: "Final Project"
 author: "Vincent Smedile"
-date: "15 November, 2020"
+date: "13 December, 2020"
 output: html_notebook
 ---
 
-### Front Matter
-```{r}
+```{r,echo=FALSE,message=FALSE}
+### Front Matter and Cleaning Environment
+rm(list = ls())
+```
+
+## Introduction and Research Question
+
+Throughout this year, there has been a consierable amount of discoursw surrounding what kind of states and economic systems can handle the pandemic best, especially given the comparatively low amount of deaths and infectios social democracies (such as Iceland and New Zealand) and marxist countries (such as Vietnam and Cuba) have experienced. As a result, it begs the question: Does state's socioeconomic and political structure (such as socialism, capitalism, the "Nordic Model, or Communism) effect it's ability to deal with the Coronavirus? And what other factors might cause the disparity we see between nations like the United States and nations like Vietnam? In order to do this, I will be categorizing nations into the following unique state types: Marxist (which would comprise of the four major states still espousing communism; China, Cuba, Laos, and Vietnam), Nordic Model States (which comprises what many academics consider to follow the unique "Nordic Third Way" of high economic freedoms and high social programs and collctive barganing such as Norway, Sweden, Iceland, Denmark, and Finland), Socialist Coalition Governments (which comprises of both dominant party republics and states with parliamentary elected socialist coalitions), and Capitalist countries (which comprises everyone else). To do this, I compared state type and a variable I created called "Covid Response Sucess Rate", or CRSR, which is a combined measure of a nations infection and death rates, and their total cases and deaths due to COVID. A lower score corresponds to a better COVID response, and is considered to be good. I will be separating the nations into different economic development tiers to ensure that there is no confounding influence of development. 
+
+## Data
+
+Below I have loaded the necessary packages for this analysis, including political science packages that will allow me to run preliminary regression analyses on my data.
+
+```{r,message=FALSE}
 # Load required packages
 library(ggplot2)
 library(rio)
@@ -15,6 +27,15 @@ library(stargazer)
 library(dplyr)
 ```
 
+### Sources of Data
+
+The Primary source is the [COVID International Dataset](https://github.com/slinnpsu/PLSC309/blob/master/covid_international.csv), which was created by Clayton Webb of the Kansas State Unversity Political Science Department (a partner of my Political Science professor here at Penn State), who complied the dataset using datasets from the [Our World in Data](https://ourworldindata.org/) and [The Quality of Government Institute](https://qog.pol.gu.se/). I specifically obtained it through Dr. Suzanna Linn,  a Professor of Political Science here at Penn State (who is currently one of my other instructors). ISO Codes were taken from the [International Organization for Standardization](https://www.iso.org/about-us.html). The secondary source I obtained from the [World Bank](https://data.worldbank.org/indicator/NY.GNP.PCAP.CD). The Covid International Dataset is collected and maintained by Clayton Webb of KSU and the GNI data is collected and maintained by the World Bank. 
+  
+  The COVID International Dataset was collected by Professor Webb for the purposes of analyzing the social and political impacts of COVID-19 on international affairs. Due to his past partnerships with Professor Linn of the Penn State Political Science Department, the PSU Polisci Dept. also uses it for the same purposes and gives it to Polisci students for individual research practice. 
+
+My main independent variable of analysis will be the **State_Type** variable, and my main dependent variable of analysis will be the **response_sucess_lev** variable, which corresponds to a nation's CRSR (COVID Response Sucess Rate)
+
+
 ```{r}
 #Load Data Files
 
@@ -22,14 +43,35 @@ covid_data <- read.csv("covid_international.csv")
 gni_data <- read.csv("Income ratings.csv")
 ```
 
-### Preliminary Cleaning of Data
+### Overview of Data
 
+Below I analyze the structure and composition, as well as cases of the COVID International Dataset and the GNI Data from the World Bank. Overallm it appears that a case constitutes a country in both datasets, andthat the location variable in the COVID data corresponds to a Country in the GNI data.
+
+#### Analysis of the Covid International Dataset
 ```{r}
+str(covid_data)
+head(covid_data)
+```
+
+
+#### Analysis of the World Bank Data
+```{r}
+str(gni_data)
+head(gni_data)
+```
+
+### Cleaning the Data and Creating the Variables of Analysis
+
+Below, I will utilize data wrangling to separate and categorize each case (a country in the world) into one of the state type categories that I mentioned previously. I will also use this to construct the CRSR rating. 
+
+```{r,message=FALSE}
+# Here I will be correcting the death and infection rates for population, once I am done they will all be of the same unit (deaths per million people)
 covid_data <-
   covid_data %>%
   mutate(death_rate = ((death_rate/population)*1000000))%>%
   mutate(inf_rate = ((inf_rate/population)*1000000))
 
+# Below here I will be separating each nation into a specific state type by adding my own categorical variable "State Type" to each case. It is here that I will also code for a nations CRSR, which corresponds to the response_sucess_lev variable. 
 marxist <-
   covid_data %>%
   filter(iso_code %in% c("CHN","LAO","CUB","VNM"))%>%
@@ -37,7 +79,7 @@ marxist <-
   mutate(inf_prev_lev = inf_rate+cases)%>%
   mutate(death_prev_lev = deaths + death_rate)%>%
   mutate(response_sucess_lev = inf_prev_lev+death_prev_lev)%>%
-  mutate(state_type = 3)
+  mutate(state_type = "Marxist")
 
 socialist_govs <-
   covid_data %>%
@@ -46,7 +88,7 @@ socialist_govs <-
   mutate(inf_prev_lev = inf_rate+cases)%>%
   mutate(death_prev_lev = deaths + death_rate)%>%
   mutate(response_sucess_lev = inf_prev_lev+death_prev_lev)%>%
-  mutate(state_type = 2)
+  mutate(state_type = "Socialist Coalition")
 
 nordic_model <- 
   covid_data %>%
@@ -55,7 +97,7 @@ nordic_model <-
   mutate(inf_prev_lev = inf_rate+cases)%>%
   mutate(death_prev_lev = deaths + death_rate)%>%
   mutate(response_sucess_lev = inf_prev_lev+death_prev_lev)%>%
-  mutate(state_type = 1)
+  mutate(state_type = "Nordic Model")
 
 `%notin%` <- Negate(`%in%`) #allows me to not include the selected countries when filtering
 
@@ -67,7 +109,9 @@ capitalist_govs <-
   mutate(inf_prev_lev = inf_rate+cases)%>%
   mutate(death_prev_lev = deaths + death_rate)%>%
   mutate(response_sucess_lev = inf_prev_lev+death_prev_lev)%>%
-  mutate(state_type = 0)
+  mutate(state_type = "Capitalist")
+
+# Below here I will be joining the individual datasets that contain each country type to create a complete dataset of the whole world's data. 
 
 adapted_covid_data <-
   capitalist_govs %>%
@@ -77,50 +121,21 @@ adapted_covid_data <-
     select(location,iso_code,state_type,response_sucess_lev,death_prev_lev,inf_prev_lev,gdp_pc)%>%
   arrange(location)
 
+# Here I will finish the cleaning by joining the data from the COVID International Dataset with the World Bank's economic indicators. 
 complete_cov_data <-
   adapted_covid_data %>%
   left_join(gni_data %>% select(Country.Code,IncomeGroup),by=c("iso_code"="Country.Code"))
-complete_cov_data
 ```
 
+Here I will engage in an analysis of the structure of each dataset and clarify what each case means in this instance, as well as analyze the central tendancies, range, and other characteristics of the data. 
 
-### Guiding Question (i.e., Research Question): Make a clear statement of a single guiding/research question that will drive your analysis.  It should be phrased as a question that you will try to investigate (i.e., it should have a question mark) 
-
-**Research Question:** Does a state's socioeconomic and political structure (such as socialism, capitalism, the "Nordic Model, or Communism) effect it's ability to deal with the Coronavirus? And what other factors might cause the disparity we see between nations like the United States and nations like Vietnam?
-
-#### Become acquainted with your data sources:
-
-##### Where did you find them?
-  
-  The Primary source I obatained from Clayton Webb of the Kansas State Unversity Political Science Department (a partner of my Political Science professor here at Penn State), who complied the dataset using datasets from the [Our World in Data](https://ourworldindata.org/) and [The Quality of Government Institute](https://qog.pol.gu.se/). I specifically obtained it through Dr. Suzanna Linn,  a Professor of Political Science here at Penn State (who is currently one of my other instructors). ISO Codes were taken from the [International Organization for Standardization](https://www.iso.org/about-us.html). The secondary source I obtained from the [World Bank](https://data.worldbank.org/indicator/NY.GNP.PCAP.CD).
-
-  
-##### Who collected/maintains them?
-  
-  The Covid International Dataset is collected and maintained by Clayton Webb of KSU and the GNI data is collected and maintained by the World Bank.
-  
-##### When & Why were they originally collected?
-  
-  The COVID International Dataset was collected by Professor Webb for the purposes of analyzing the social and political impacts of COVID-19 on international affairs. Due to his past partnerships with Professor Linn of the Penn State Political Science Department, the PSU Polisci Dept. also uses it for the same purposes and gives it to Polisci students for individual research practice. 
-  
-##### What does a case represent in each data source, and how many total cases are available?
-  
-  A case in both the GNI and the COVID International Dataset is a single nation-state, woth 212 individual countries/cases.
-  
+#### Analysis of the Now Cleaned Variables
 ```{r}
-nrow(complete_cov_data)
+str(complete_cov_data)
+head(complete_cov_data)
 ```
 
-  
-##### What are some of the variables that you plan to use?
-
-  I plan on specifically using the number of deaths, death rate, infection rate, total number of infected. These will be all summed together to create a COVID Response Sucess Rating (CRSR), which will then be evaliated by the "State Type," a variable that I created myself based off of the government and socioeconomics of the nation that divides countries either into Capitalist, Socialist (nations with a socialist coalotion or government in power), Marxist/Communist (only five countries still espouse this: Cuba, China, Laos, and Vietnam), and the "Nordic Model" (which refers to the unique economic model followed by the Nordic countries such as Sweden and Denmark). Response level, population density, and economic development level will be used as control variables/in case of spurious relations.
-
-### Explore intuition related to the research question 
-
-#### 1. Create some informative plots and summary statistics 
-
-##### Central Tendancy, Range, Standard Dev., and Distribution: 
+#### Central Tendancy, Range, Standard Dev., and Distribution: 
 
 ```{r}
 # The World Median CRSR
@@ -139,18 +154,19 @@ sd(complete_cov_data$response_sucess_lev,na.rm=TRUE)
 cor(complete_cov_data$state_type,complete_cov_data$response_sucess_lev, use = "pairwise.complete.obs",method = "pearson")
 ```
 
+
+### Analysis of the Relationship Between Variables and Results
 ```{r}
 complete_cov_data %>%
   ggplot(mapping=aes(x=factor(state_type), y=response_sucess_lev,fill=factor(state_type)))+
   geom_boxplot()+
+  geom_point()+
   guides(fill=FALSE)+
   labs(title="Distribution of COVID Response Rating \nby State Type",
        caption="Source: COVID International Dataset \nWorld Bank",
        x="State Type",
        y="Covid Response Sucess Rating")+
-  scale_x_discrete(labels = c("Capitalist", "Nordic Model", "Socialist", "Marxist"))+
-  scale_y_continuous(limits = c(0,15000))+
-  scale_fill_discrete(labels = c("Capitalist", "Nordic Model", "Socialist", "Marxist"))
+  scale_y_continuous(limits = c(0,15000))
 ```
 
 ```{r}
@@ -164,13 +180,8 @@ complete_cov_data%>%
        x="Covid Response Sucess Rating",
        y="Density")+
   scale_x_continuous(limits=c(0,15000))+
-  scale_fill_discrete(labels = c("Capitalist", "Nordic Model", "Socialist", "Marxist"))+
   facet_wrap(~state_type)
 ```
 
+#### Concluding Remarks 
 
-#### 2. Describe preliminary observations and intuition about the research question
-
-Overall from what I can tell, governments with socialist parties in power or communist/marxist states have overall lower deaths, total infections, and death and infection rates than the rest of the world does. We can see this in the fact that the range of values for CRSR is lower (which denotes a more effective response to COVID), in both range and mean for socialist and marxist nations compared to other state types. 
-
-However, these preliminary measures do not control for things such as population density and economic development levels. Furthermore, specific policy decisions such as response stricness have not been taken into account yet as well. However, I remain confident that the leftist governments, such as socialist and marxist states will remain lower in terms of deaths and infections, and thus better equipped at combatting the COVID-19 Pandemic even when these variables are controlled for.
