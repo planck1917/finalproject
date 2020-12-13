@@ -68,34 +68,35 @@ Below, I will utilize data wrangling to separate and categorize each case (a cou
 # Here I will be correcting the death and infection rates for population, once I am done they will all be of the same unit (deaths per million people)
 covid_data <-
   covid_data %>%
-  mutate(death_rate = ((death_rate/population)*1000000))%>%
-  mutate(inf_rate = ((inf_rate/population)*1000000))
+  mutate(inf_rate_mod = (inf_rate/wdi_pop)*1000000)%>%
+  mutate(death_rate_mod = (death_rate/wdi_pop)*1000000)
 
 # Below here I will be separating each nation into a specific state type by adding my own categorical variable "State Type" to each case. It is here that I will also code for a nations CRSR, which corresponds to the response_sucess_lev variable. 
 marxist <-
   covid_data %>%
   filter(iso_code %in% c("CHN","LAO","CUB","VNM"))%>%
-  select(location,iso_code,inf_rate,death_rate,deaths,cases,gdp_pc)%>%
-  mutate(inf_prev_lev = inf_rate+cases)%>%
-  mutate(death_prev_lev = deaths + death_rate)%>%
+  select(location,iso_code,inf_rate_mod,death_rate_mod,deaths,cases,gdp_pc,pop_density,response, fh_polity2)%>%
+  mutate(inf_prev_lev = inf_rate_mod+cases)%>%
+  mutate(death_prev_lev = deaths + death_rate_mod)%>%
   mutate(response_sucess_lev = inf_prev_lev+death_prev_lev)%>%
   mutate(state_type = "Marxist")
 
 socialist_govs <-
   covid_data %>%
-  filter(location %in% c("Nepal","Venezuela","Spain","New Zealand","Nicaragua","Argenti","Mozambique","Moldova","Angola","Algeria"))%>%
-  select(location,iso_code,inf_rate,death_rate,deaths,cases,gdp_pc)%>%
-  mutate(inf_prev_lev = inf_rate+cases)%>%
-  mutate(death_prev_lev = deaths + death_rate)%>%
+  filter(location %in% c("Nepal","Venezuela","Spain","New Zealand","Nicaragua","Argenti","Mozambique","Moldova","Angola","Algeria","Zimbabwe"))%>%
+  select(location,iso_code,inf_rate_mod,death_rate_mod,deaths,cases,gdp_pc,pop_density,response, fh_polity2)%>%
+  mutate(inf_prev_lev = inf_rate_mod+cases)%>%
+  mutate(death_prev_lev = deaths + death_rate_mod)%>%
+
   mutate(response_sucess_lev = inf_prev_lev+death_prev_lev)%>%
   mutate(state_type = "Socialist Coalition")
 
 nordic_model <- 
   covid_data %>%
   filter(location %in% c("Iceland","Norway","Sweden","Denmark","Finland"))%>%
-  select(location,iso_code,inf_rate,death_rate,deaths,cases,gdp_pc)%>%
-  mutate(inf_prev_lev = inf_rate+cases)%>%
-  mutate(death_prev_lev = deaths + death_rate)%>%
+  select(location,iso_code,inf_rate_mod,death_rate_mod,deaths,cases,gdp_pc,pop_density,response, fh_polity2)%>%
+  mutate(inf_prev_lev = inf_rate_mod+cases)%>%
+  mutate(death_prev_lev = deaths + death_rate_mod)%>%
   mutate(response_sucess_lev = inf_prev_lev+death_prev_lev)%>%
   mutate(state_type = "Nordic Model")
 
@@ -103,11 +104,11 @@ nordic_model <-
 
 capitalist_govs <- 
   covid_data %>%
-  filter(location %notin% c("Iceland","Norway","Sweden","Denmark","Finland","Nepal","Venezuela","Spain","New Zealand","Nicaragua","Argenti","Mozambique","Moldova","Angola","Algeria"))%>%
+  filter(location %notin% c("Iceland","Norway","Sweden","Denmark","Finland","Nepal","Venezuela","Spain","New Zealand","Nicaragua","Argenti","Mozambique","Moldova","Angola","Algeria","Zimbabwe"))%>%
   filter(iso_code %notin% c("CHN","LAO","CUB","VNM"))%>%
-  select(location,iso_code,inf_rate,death_rate,deaths,cases,gdp_pc)%>%
-  mutate(inf_prev_lev = inf_rate+cases)%>%
-  mutate(death_prev_lev = deaths + death_rate)%>%
+  select(location,iso_code,inf_rate_mod,death_rate_mod,deaths,cases,gdp_pc,pop_density,response, fh_polity2)%>%
+  mutate(inf_prev_lev = inf_rate_mod+cases)%>%
+  mutate(death_prev_lev = deaths + death_rate_mod)%>%
   mutate(response_sucess_lev = inf_prev_lev+death_prev_lev)%>%
   mutate(state_type = "Capitalist")
 
@@ -118,13 +119,14 @@ adapted_covid_data <-
     full_join(marxist)%>%
     full_join(nordic_model)%>%
     full_join(socialist_govs)%>%
-    select(location,iso_code,state_type,response_sucess_lev,death_prev_lev,inf_prev_lev,gdp_pc)%>%
+    select(location,iso_code,state_type,response_sucess_lev,death_prev_lev,inf_prev_lev,gdp_pc,pop_density,response,fh_polity2)%>%
   arrange(location)
 
 # Here I will finish the cleaning by joining the data from the COVID International Dataset with the World Bank's economic indicators. 
 complete_cov_data <-
   adapted_covid_data %>%
   left_join(gni_data %>% select(Country.Code,IncomeGroup),by=c("iso_code"="Country.Code"))
+complete_cov_data
 ```
 
 <hr>
@@ -137,7 +139,15 @@ str(complete_cov_data)
 head(complete_cov_data)
 ```
 
-#### Central Tendancy, Range, Standard Dev., and Distribution: 
+<hr>
+
+#### Central Tendancy, Range, Standard Dev, and Distribution of CRSRs: 
+
+The dependent variable will be defined as “COVID Response Success,” which will be comprised of two components: Infection Prevention Level and Death Prevention Level. Infection Prevention Level will be an interval variable comprised of a summation of the Average COVID Cases per day (the average daily infection rate) and the Total Number of COVID Cases (total number of COVID deaths during the pandemic) through August 17th 2020. Death Prevention Level will be an interval variable as well, which is created by a summation of the Average COVID Deaths per Day (the average deaths in a country over the course of the pandemic) and the Total number of COVID Deaths (deaths due to COVID over course of pandemic) .To determine each nation’s COVID Response Success Rating (CRSR), Infection Prevention and Death Prevention will be added together to form one singular score. Nations with the lowest score will be considered to have a better success at dealing with the COVID-19 pandemic.
+
+From the data analysis, the central tendency or median of around 8108.77 (computed using the median of the world’s CRSRs), with a standard deviation of around 533989 and a range of 19 to 5.57 million. The distribution of CRSRs exhibited a unimodal distribution of CRSRs skewed to the right, signifying that the nations generally had low CRSRs compared to one another, with a sizable degree of dispersion due to the presence of glaring outliers (possibly the result of nations that chose to ignore or were unable to combat the pandemic due to a lack of resources).
+
+<hr>
 
 ```{r}
 complete_cov_data %>%
@@ -230,12 +240,87 @@ nrow(complete_cov_data)
 
 <hr>
 
-From the data analysis, the central tendency of around 8108.77 (computed using the median of the world’s CRSRs), with a standard deviation of around 533989 and a range of 1.927102e+01 to 5.573396e+06. The distribution of CRSRs exhibited a unimodal distribution of CRSRs skewed to the right, signifying that the nations generally had low CRSRs compared to one another, with a sizable degree of dispersion due to the presence of glaring outliers (possibly the result of nations that chose to ignore or were unable to combat the pandemic due to a lack of resources). It is also worth noting that the Nordic Model nations appeared to have the lowest central tendency, with a median CRSR of 36575.45. Marxist states were the next lowest with a central tendency of around 46325.37, and socialist coalition governments the next lowest with 130061.4. Capitalist governments had a much higher median of 564849.8. The ranges of CRSR values varies for each state type varies, however. The Nordic Model countries appear to have the highest minimum and maximum values, and the highest mean CRSR. Marxist states had the lowest range of values, as well as the lowest mean CRSR rating. Capitalist governments had the next lowest mean and had a lower minimum and maximum than the socialist coalition and Nordic state types. Lastly, socialist coalition governments had a minimum, maximum, and mean smaller only than the Nordic Model states. 
+#### Central Tendancy, Range, Standard Dev, and Distribution of State Types:
+
+The independent variable will be defined as “State Type,” which will be a selection of cases handpicked and categorized by myself from the variable “country” from the COVID International Data Set. State Type will be a categorical variable broken down COVID the following five types. Nordic Social Democracies, which include nations that follow the “Nordic Model” (Iceland, Finland, Sweden, Denmark, and Norway) (Simon, 2017). Socialist Coalition Governments, or nations currently governed by an elected leftist party (such as New Zealand, Venezuela, Nepal, or Spain). State Socialist Nations, which are four of the five remaining nations espousing socialism, communism, Marxism (People’s Republic of China, Vietnam, Cuba, and Laos). Lastly, all other nations that are not specifically organized into the following categories will be considered “free-market capitalist” states.
+
+The preliminary analysis of the State Type variable displayed that most of the world is comprised of nations that fit into the “Free Market Capitalist” category, with what can be considered a central tendency toward capitalism and a unimodal distribution when it comes to socioeconomic type for states in the 21st century. Overall, there were 194 capitalist countries, 11 socialist coalition governments, 5 Nordic Model countries, and only 4 Marxist states. The large array of nations from different income rankings, continents, conditions, etc. within the capitalist category would account for the great deal of variation and outliers present within the capitalist states, which was lacking in the other state type variables.
 
 <hr>
 
+```{r}
+complete_cov_data %>%
+  ggplot(mapping=aes(x=state_type,fill=state_type))+
+    geom_bar()+
+    labs(title="Distribution of State Types",
+         x="State Type",
+         y="Total Countries")+
+  scale_fill_discrete(name="State Type")
+```
+
 ### Analysis of the Relationship Between Variables and Results
 
+<hr>
+#### Preliminary Analysis of the Variables
+
+As shown in Figure 3, when separated by State Type, this analysis' main independent variable, it was seen that generally, the Marxist states performed the best, having both the lowest minimum and maximum CRSRs of around 20 to 3500, and the lowest median CRSR of around 1000. Interestingly, the capitalist states (despite having the largest range and maximum value), had the second lowest median CRSR of around 1600. Socialist Coalition governments had the third lowest median of around 2800, followed by Nordic Model States with a median of 5000. However, as seen in Figure 4 due to the overlap of the error bars, at the moment this relation indicates that there is not a statistical relationship between State Type and CRSRs, and a p-value > .05.
+
+```{r}
+complete_cov_data%>%
+  filter(!is.na(state_type) & !is.na(response_sucess_lev))%>%
+  group_by(state_type)%>% 
+  summarize(mean=mean(response_sucess_lev, na.rm=TRUE), n=n(), sd=sd(response_sucess_lev, na.rm=TRUE))%>%
+  mutate(margin=1.96*sd/sqrt(n)) %>%
+ggplot(mapping=aes(y=mean, x=factor(state_type))) +
+  geom_point(color="red") +
+  geom_errorbar(aes(ymin=mean-margin, ymax=mean+margin), width=.1)+
+  labs(title="Figure 4: Correlation Analysis Between State Type and CRSR",
+       x=NULL,
+       y= "COVID Response Rating")
+```
+
+<hr>
+
+#### Multiple Regression Analysis of the Variables
+
+A linear regression model was conducted to determine the relationship between the variables. Overall, there was no statistically significant relationship found between State Type and CRSRs, although all leftist states types did create a decrease of CRSR.
+
+The following Variables were utilized as controls:
+
+- **Economic Development Level:** Countries with a higher income level naturally would have access to better resources and be better equipped to fight the pandemic.
+- **Population Density:** Countries with more persons closely packed could have a higher viral spread.
+- **Democracy Rating:** A lower democracy index rating might correlate to the citizens of the nation having restricted lives anyways, which could lower COVID cases.
+- **Stringency of Response:** Nations with tighter lockdowns and more closures of public spaces may have lower transmission of COVID outside their socialized medicine and economic apparatus.
+
+```{r}
+multi_reg1 <- lm(response_sucess_lev ~ state_type + IncomeGroup+ pop_density + response + fh_polity2, data=complete_cov_data)
+summary(multi_reg1)
+```
+
+
+Overall, each variable had the following effects on a country's CRSR when all other variables are held constant. Note that Capitalist states and Upper Income nations are not included as they were used as the reference/constant for the Income and State Type factor:
+
+- **Marxist:** CRSR value will drop around 59742 points, which means being a Marxist state translates to handling COVID better.
+- **Socialist Coalition Countries:** the CRSR drops on average around 250746 points, meaning having a socialist coalition or party in power enacting such policies translates to handling COVID better.
+- **Nordic Model Countries:** the CRSR value drops 83740 points, meaning the Nordic Model practiced by the Nordic countries increases a government's ability to handle COVID.
+- **Lower Income Nations:** It also appears that Low Income are likely to have lower CRSRs with a predicted drop in around 104565
+- **Lower Middle Income Nations:** Appear to decrease CRSRs 31894 points.) for both.
+- **Upper Middle Income:** Being an upper middle income nation causes a predicted 94818 point increase in CRSR, implying that wealthier nations actually do worse.
+- **Response Stringency:** States with a higher response stringency were likely to have a lower CRSR, with every 1 point higher on the Response Stringency Index amounting to a predicted 1848.94 point drop in CRSR.
+- **Democracy Index Rating:** The higher one scores on a scale of 1-10, the higher the CRSR. For every 1 point increase on the combined Freedom House-Polity Democracy score (meaning more democratic), there is a predicted 20650.32 point increase in CRSR. Meaning that the more democratic a nation is, the worse it's ability to handle the COVID pandemic.
+
+
+```{r}
+library(stargazer)
+stargazer(multi_reg1,
+          type='text',
+          title = "Multi Regression of CRSR Sucess Ratings",
+          dep.var.caption = "COVID Response Sucess Rating",
+          covariate.labels = c("Marxist State","Nordic Model","Socialist Coalition","Low Income","Lower Middle Income","Upper Middle Income","Population Density","Response Stringency","Democracy Rating","Intercept"))
+```
 
 #### Concluding Remarks 
 
+Based on the data analysis presented herein, it can be said with some degree of certainty that the socioeconomic organization of a state does not affect it’s ability to better combat the pandemic. As shown by the predictive modeling, the average CRSR for Socialist Coalition States, Marxist States, and Nordic Model States were all lower than the CRSR for capitalist states, which translates to a better response as the CRSR is a combined measure that denotes smaller deaths, infection count, mortality rate due to COVID, and smaller infection rate. Alongside this was possible predictive evidence to suggest that nations with less traditional liberal democratic structures might be better equipped at dealing with the pandemic. This could possibly be due in part to the social ostracization and collectivist mindset usually incorporated into authoritarian regimes. 
+
+Furthermore, there is the possibiity that the study was constrained by sources of error and limitations. The model itself does not have a very high level of confidence (low $R^2$ value), thus leading to the possibility that the relation we are seeing is indeed real, but requires further analysis of possible confounding and control variables in order to determine if this prediction is in fact real. Moreover, due to the possible evidence of the suppression of counting and data collection in places such as the United States or China, there is a chance that the numbers presented are not correct and thus prevent a proper relationship. It is possible that there are cultural aspects and social aspects, such as social traditions that may not be accounted for or could better predict how leftist policies affect COVID., for example, the Confucianist traditions of China and Vietnam and the cultural collectivism inherent in Nordic and Viking culture might be a confounding variable. Another possible issue is that the categorization for State Type, specifically the Socialist Coalition category, was assigned based on personal knowledge and research. Furthermore, parties with officially leftwing ideas may not always enact the socialistic policies shown in past literature to better deal with pandemics (see Sweden and Spain's comparatively center to center-right wing responses to COVID). 
