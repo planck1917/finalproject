@@ -127,6 +127,8 @@ complete_cov_data <-
   left_join(gni_data %>% select(Country.Code,IncomeGroup),by=c("iso_code"="Country.Code"))
 ```
 
+<hr>
+
 Here I will engage in an analysis of the structure of each dataset and clarify what each case means in this instance, as well as analyze the central tendancies, range, and other characteristics of the data. 
 
 #### Analysis of the Now Cleaned Variables
@@ -138,35 +140,14 @@ head(complete_cov_data)
 #### Central Tendancy, Range, Standard Dev., and Distribution: 
 
 ```{r}
-# The World Median CRSR
-median(complete_cov_data$response_sucess_lev,na.rm=TRUE)
-
-# The World Mean CRSR 
-mean(complete_cov_data$response_sucess_lev,na.rm=TRUE)
-
-# The World Range of CRSR Values
-range(complete_cov_data$response_sucess_lev,na.rm=TRUE)
-
-# The World Standard Deviation
-sd(complete_cov_data$response_sucess_lev,na.rm=TRUE)
-
-# The Correlation Coefficient Between CRSR and State Type
-cor(complete_cov_data$state_type,complete_cov_data$response_sucess_lev, use = "pairwise.complete.obs",method = "pearson")
-```
-
-
-### Analysis of the Relationship Between Variables and Results
-```{r}
 complete_cov_data %>%
-  ggplot(mapping=aes(x=factor(state_type), y=response_sucess_lev,fill=factor(state_type)))+
-  geom_boxplot()+
-  geom_point()+
-  guides(fill=FALSE)+
-  labs(title="Distribution of COVID Response Rating \nby State Type",
-       caption="Source: COVID International Dataset \nWorld Bank",
-       x="State Type",
-       y="Covid Response Sucess Rating")+
-  scale_y_continuous(limits = c(0,15000))
+  ggplot(mapping=aes(x=response_sucess_lev))+
+    geom_histogram(bins=20)+
+    geom_vline(aes(xintercept=median(response_sucess_lev,na.rm=TRUE)),color="black",linetype="dashed")+
+    labs(title="Figure 1: Distribution of Global Covid Response Ratings",
+         caption="Source: COVID International Dataset",
+         x="COVID Response Sucess Rating",
+         y="Frequency")
 ```
 
 ```{r}
@@ -182,6 +163,79 @@ complete_cov_data%>%
   scale_x_continuous(limits=c(0,15000))+
   facet_wrap(~state_type)
 ```
+
+```{r}
+complete_cov_data%>%   
+  ggplot(mapping=aes(x=state_type,y=response_sucess_lev,fill=state_type))+
+  geom_boxplot()+
+  labs(title="Distribution of COVID Response Ratings by State Type",
+       caption="Source: COVID International Dataset \nWorld Bank",
+       x=NULL,
+       y="COVID Response Rating")+
+  scale_y_continuous(limits=c(0,10000),breaks=c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000))+
+  scale_fill_discrete(name="State Type")
+```
+
+#### For capitalist States
+```{r}
+median(capitalist_govs$response_sucess_lev,na.rm=TRUE)
+sd(capitalist_govs$response_sucess_lev,na.rm=TRUE)
+range(capitalist_govs$response_sucess_lev,na.rm=TRUE)
+nrow(capitalist_govs)
+```
+
+<hr>
+
+#### For Socialist Coalition Govs
+```{r}
+
+median(socialist_govs$response_sucess_lev,na.rm=TRUE)
+sd(socialist_govs$response_sucess_lev,na.rm=TRUE)
+range(socialist_govs$response_sucess_lev,na.rm=TRUE)
+nrow(socialist_govs)
+```
+
+<hr>
+
+#### For Nordic nations
+```{r}
+
+median(nordic_model$response_sucess_lev,na.rm=TRUE)
+sd(nordic_model$response_sucess_lev,na.rm=TRUE)
+range(nordic_model$response_sucess_lev,na.rm=TRUE)
+nrow(nordic_model)
+```
+
+<hr>
+
+#### For Marxist States
+```{r}
+
+median(marxist$response_sucess_lev,na.rm=TRUE)
+sd(marxist$response_sucess_lev,na.rm=TRUE)
+range(marxist$response_sucess_lev,na.rm=TRUE)
+nrow(marxist)
+```
+
+<hr>
+
+#### For world data
+```{r}
+
+median(complete_cov_data$response_sucess_lev,na.rm = TRUE)
+sd(complete_cov_data$response_sucess_lev,na.rm = TRUE)
+range(complete_cov_data$response_sucess_lev,na.rm = TRUE)
+nrow(complete_cov_data)
+```
+
+<hr>
+
+From the data analysis, the central tendency of around 8108.77 (computed using the median of the world’s CRSRs), with a standard deviation of around 533989 and a range of 1.927102e+01 to 5.573396e+06. The distribution of CRSRs exhibited a unimodal distribution of CRSRs skewed to the right, signifying that the nations generally had low CRSRs compared to one another, with a sizable degree of dispersion due to the presence of glaring outliers (possibly the result of nations that chose to ignore or were unable to combat the pandemic due to a lack of resources). It is also worth noting that the Nordic Model nations appeared to have the lowest central tendency, with a median CRSR of 36575.45. Marxist states were the next lowest with a central tendency of around 46325.37, and socialist coalition governments the next lowest with 130061.4. Capitalist governments had a much higher median of 564849.8. The ranges of CRSR values varies for each state type varies, however. The Nordic Model countries appear to have the highest minimum and maximum values, and the highest mean CRSR. Marxist states had the lowest range of values, as well as the lowest mean CRSR rating. Capitalist governments had the next lowest mean and had a lower minimum and maximum than the socialist coalition and Nordic state types. Lastly, socialist coalition governments had a minimum, maximum, and mean smaller only than the Nordic Model states. 
+
+<hr>
+
+### Analysis of the Relationship Between Variables and Results
+
 
 #### Concluding Remarks 
 
