@@ -187,6 +187,22 @@ complete_cov_data%>%
   scale_fill_discrete(name="State Type")
 ```
 
+```{r}
+complete_cov_data %>%
+  filter(!is.na(IncomeGroup)) %>%
+  ggplot(mapping=aes(x=state_type,y=response_sucess_lev,fill=state_type))+
+  geom_boxplot()+
+  guides(fill=FALSE,color=FALSE)+
+  labs(title="Distribution of COVID Response Ratings by State Type",
+       caption="Source: COVID International Dataset \nWorld Bank",
+       x=NULL,
+       y="COVID Response Rating")+
+  facet_wrap(~IncomeGroup)+
+  scale_y_continuous(limits=c(0,10000),breaks=c(0,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000))+
+  scale_fill_discrete(name="State Type")
+```
+
+
 #### For capitalist States
 ```{r}
 median(capitalist_govs$response_sucess_lev,na.rm=TRUE)
